@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignId('booking_id')->constrained('bookings')->cascadeOnDelete();
             $table->foreignId('trainer_id')->constrained('trainers')->cascadeOnDelete();
             $table->foreignId('client_id')->constrained('users')->cascadeOnDelete();
-            $table->timestamp('session_start');
-            $table->timestamp('session_end');
+            $table->timestamp('session_start')->nullable();
+            $table->timestamp('session_end')->nullable();
             $table->enum('session_status', ['scheduled', 'completed', 'cancelled', 'no_show'])->default('scheduled');
             $table->text('notes')->nullable();
         });

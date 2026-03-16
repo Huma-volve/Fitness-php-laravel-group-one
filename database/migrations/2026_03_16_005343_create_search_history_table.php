@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('search_history', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('trainer_id')->nullable()->constrained('trainers')->nullOnDelete();
             $table->foreignId('specialization_id')->nullable()->constrained('specializations')->nullOnDelete();
             $table->string('search_text')->nullable();

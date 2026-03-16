@@ -1,0 +1,25 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('search_history', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->nullOnDelete();
+            $table->foreignId('trainer_id')->nullable()->constrained('trainers')->nullOnDelete();
+            $table->foreignId('specialization_id')->nullable()->constrained('specializations')->nullOnDelete();
+            $table->string('search_text')->nullable();
+            $table->timestamp('created_at')->useCurrent();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('search_history');
+    }
+};

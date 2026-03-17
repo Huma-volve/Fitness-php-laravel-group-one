@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             SpecializationSeeder::class,
             PackageSeeder::class,      // packages must exist before trainers
             TrainerSeeder::class,      // creates trainer_packages internally
+            TrainerAvilabilitiesSeeder::class,
             BookingSeeder::class,
         ]);
     }

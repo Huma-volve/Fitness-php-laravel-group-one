@@ -2,27 +2,28 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class TrainerAvailabilities extends Model
+class TrainerAvailabilityException extends Model
 {
-    use HasFactory;
-
     public $timestamps = false;
+
+    protected $table = 'trainer_availability_exceptions';
 
     protected $fillable = [
         'trainer_id',
-        'day_of_week',
+        'date',
+        'is_available',
         'start_time',
         'end_time',
-        'is_active',
+        'reason',
     ];
 
     protected function casts(): array
     {
         return [
-            'is_active' => 'boolean',
+            'date'         => 'date',
+            'is_available' => 'boolean',
         ];
     }
 

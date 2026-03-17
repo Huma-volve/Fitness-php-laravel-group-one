@@ -43,6 +43,11 @@ class TraineeSession extends Model
         return $this->session_status === 'scheduled';
     }
 
+    public function isCanceled(): bool
+    {
+        return $this->session_status === 'Canceled';
+    }
+
     // ─── Relations ───────────────────────────────────────────────────────────────
 
     public function booking()

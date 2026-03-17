@@ -9,14 +9,18 @@ class TrainerAvailabilitiesFactory extends Factory
 {
     public function definition(): array
     {
-        $startHour  = fake()->numberBetween(6, 18);
-        $endHour    = $startHour + fake()->numberBetween(1, 4);
+        $startHour = fake()->numberBetween(6, 14);
+        $endHour   = $startHour + fake()->numberBetween(4, 8);
 
         return [
-            'trainer_id' => Trainer::factory(),
-            'date'       => fake()->dateTimeBetween('now', '+3 months')->format('Y-m-d H:i:s'),
-            'start_time' => sprintf('%02d:00:00', $startHour),
-            'end_time'   => sprintf('%02d:00:00', min($endHour, 22)),
+            'trainer_id'  => Trainer::factory(),
+            'day_of_week' => fake()->randomElement([
+                'monday', 'tuesday', 'wednesday',
+                'thursday', 'friday', 'saturday', 'sunday',
+            ]),
+            'start_time'  => sprintf('%02d:00:00', $startHour),
+            'end_time'    => sprintf('%02d:00:00', min($endHour, 22)),
+            'is_active'   => true,
         ];
     }
 }

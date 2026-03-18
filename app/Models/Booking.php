@@ -20,6 +20,7 @@ class Booking extends Model
         'trainer_package_id',
         'status',
         'payment_status',
+        'expires_at',
         'cancellation_deadline',
         'cancelled_at',
         'cancel_reason',
@@ -28,6 +29,7 @@ class Booking extends Model
     protected function casts(): array
     {
         return [
+            'expires_at'            => 'datetime',
             'cancellation_deadline' => 'datetime',
             'cancelled_at'          => 'datetime',
             'created_at'            => 'datetime',
@@ -36,19 +38,14 @@ class Booking extends Model
 
     // ─── Status Helpers ───────────────────────────────────────────────────────────
 
-    public function isPending(): bool
-    {
-        return $this->status === 'pending';
-    }
+    public function isDraft(): bool     { return $this->status === 'draft'; }
+    public function isPending(): bool   { return $this->status === 'pending'; }
+    public function isConfirmed(): bool { return $this->status === 'confirmed'; }
+    public function isCanceled(): bool  { return $this->status === 'canceled'; }
 
-    public function isConfirmed(): bool
+    public function isExpired(): bool
     {
-        return $this->status === 'confirmed';
-    }
-
-    public function isCanceled(): bool
-    {
-        return $this->status === 'canceled';
+        return $this->isDraft() && $this->expires_at && now()->isAfter($this->expires_at);
     }
 
     // ─── Relations ───────────────────────────────────────────────────────────────

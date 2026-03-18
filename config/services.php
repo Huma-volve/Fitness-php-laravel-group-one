@@ -35,9 +35,14 @@ return [
         ],
     ],
     'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => 'http://127.0.0.1:8000/api/auth/google/callback',
-],
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => 'http://127.0.0.1:8000/api/auth/google/callback',
+    ],
 
+    'paypal' => [
+        'client_id'     => env('PAYPAL_CLIENT_ID'),
+        'client_secret' => env('PAYPAL_CLIENT_SECRET'),
+        'mode'          => env('PAYPAL_MODE', 'sandbox'),
+    ],
 ];

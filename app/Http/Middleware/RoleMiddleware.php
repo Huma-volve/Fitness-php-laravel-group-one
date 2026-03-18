@@ -13,7 +13,7 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next , $role): Response
     {
 
     if(!auth()->check()){
@@ -22,7 +22,7 @@ class RoleMiddleware
                 'message' => 'Unauthenticated'
             ], 401);
     }
-    if(!in_array(auth()->user()->role,$roles)){
+    if(auth()->user()->role !== $role){
           return response()->json([
                 'status'  => false,
                 'message' => 'Unauthorized'

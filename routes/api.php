@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\OtpController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SearchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,3 +45,6 @@ Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
 });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
+Route::get('/search', [SearchController::class, 'search']);
+Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);

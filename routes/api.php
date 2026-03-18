@@ -6,6 +6,11 @@ use App\Http\Controllers\Api\TrainerAvailabilityController;
 use App\Http\Controllers\Api\TrainerSessionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\LandingController;
+use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\ReviewController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -19,31 +24,62 @@ Route::get('packages/{package}/trainers',     [PackageController::class, 'traine
 Route::get('trainers/{trainer}/availability', [TrainerAvailabilityController::class, 'slots']);
 Route::get('trainers/{trainer}/schedule',     [TrainerAvailabilityController::class, 'schedule']);
 
-    Route::get   ('bookings',                      [BookingController::class, 'index']);
-    Route::post  ('bookings',                      [BookingController::class, 'store']);
-    Route::get   ('bookings/{booking}',            [BookingController::class, 'show']);
-    Route::put   ('bookings/{booking}/reschedule', [BookingController::class, 'reschedule']);
-    Route::delete('bookings/{booking}/cancel',     [BookingController::class, 'cancel']);
+Route::middleware('auth:sanctum')->group(function () {
 
-//    Route::get('trainer/sessions',           [TrainerSessionController::class, 'index']);
-//    Route::get('trainer/sessions/{session}', [TrainerSessionController::class, 'show']);
-//    Route::get('trainer/bookings',           [TrainerSessionController::class, 'bookings']);
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\OtpController;
-use App\Http\Controllers\Api\LandingController;
-use App\Http\Controllers\Api\NewsletterController;
-use App\Http\Controllers\Api\ReviewController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
+    Route::middleware('role:trainee')->group(function () {
+
+        Route::get ('bookings',                        [BookingController::class, 'index']);
+        Route::get ('bookings/{booking}',              [BookingController::class, 'show']);
+
+        Route::post('bookings/schedule',               [BookingController::class, 'schedule']);
+
+        Route::post('bookings/{booking}/pay',          [BookingController::class, 'pay']);
+        Route::post('bookings/{booking}/confirm',      [BookingController::class, 'confirm']);
+
+        Route::put ('bookings/{booking}/reschedule',   [BookingController::class, 'reschedule']);
+        Route::delete('bookings/{booking}/cancel',     [BookingController::class, 'cancel']);
+    });
+
+    Route::middleware('role:trainer')->group(function () {
+        Route::get('trainer/sessions',           [TrainerSessionController::class, 'index']);
+        Route::get('trainer/sessions/{session}', [TrainerSessionController::class, 'show']);
+        Route::get('trainer/bookings',           [TrainerSessionController::class, 'bookings']);
+    });
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 
-
-
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout',         [AuthController::class, 'logout']);
+    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
+    Route::get('/profile',         [AuthController::class, 'profile']);
+
+
+    Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
+    Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
+    Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
+});
+
+Route::prefix('landing')->group(function () {
+    Route::get('/stats',    [LandingController::class, 'stats']);
+    Route::get('/trainers', [LandingController::class, 'trainers']);
+    Route::get('/packages', [LandingController::class, 'packages']);
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::get('/trainers/{trainerId}/reviews', [ReviewController::class, 'trainerReviews']);
+});
+
+Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
+    Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+});
+Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
 

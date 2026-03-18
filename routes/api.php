@@ -1,18 +1,20 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\LandingController;
+use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\TrainerAvailabilityController;
 use App\Http\Controllers\Api\TrainerSessionController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\OtpController;
 use App\Http\Controllers\Api\ContactController;
-use App\Http\Controllers\Api\LandingController;
-use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ProfileController;
-use App\Http\Controllers\Api\ReviewController;
+use Illuminate\Http\Request;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -102,4 +104,6 @@ Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
+Route::get('/search', [SearchController::class, 'search']);
+Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);
 

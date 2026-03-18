@@ -33,20 +33,10 @@ class TraineeSession extends Model
 
     // ─── Status Helpers ───────────────────────────────────────────────────────────
 
-    public function isCompleted(): bool
-    {
-        return $this->session_status === 'completed';
-    }
-
-    public function isScheduled(): bool
-    {
-        return $this->session_status === 'scheduled';
-    }
-
-    public function isCanceled(): bool
-    {
-        return $this->session_status === 'Canceled';
-    }
+    public function isPendingPayment(): bool { return $this->session_status === 'pending_payment'; }
+    public function isScheduled(): bool      { return $this->session_status === 'scheduled'; }
+    public function isCompleted(): bool      { return $this->session_status === 'completed'; }
+    public function isCancelled(): bool      { return $this->session_status === 'cancelled'; }
 
     // ─── Relations ───────────────────────────────────────────────────────────────
 

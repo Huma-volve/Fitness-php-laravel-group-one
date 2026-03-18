@@ -20,6 +20,7 @@ class Payment extends Model
         'payment_method',
         'payment_status',
         'transaction_id',
+        'gateway_reference',
     ];
 
     protected function casts(): array
@@ -29,6 +30,11 @@ class Payment extends Model
             'created_at' => 'datetime',
         ];
     }
+
+    // ─── Status Helpers ───────────────────────────────────────────────────────────
+
+    public function isPaid(): bool   { return $this->payment_status === 'paid'; }
+    public function isFailed(): bool { return $this->payment_status === 'failed'; }
 
     // ─── Relations ───────────────────────────────────────────────────────────────
 

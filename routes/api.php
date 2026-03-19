@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\Auth\OtpController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\ChatMessageController;
+use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,3 +46,28 @@ Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
 });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
+
+
+
+
+
+
+
+
+//////////////////// chat ///////////////////////
+Route::middleware('auth:sanctum')->group(function(){
+    
+      Route::post('/conversations', [ChatMessageController::class, 'startConversation']);
+       Route::get('/conversations', [ChatMessageController::class, 'getConversations']);
+          Route::get('/conversations/{id}/messages', [ChatMessageController::class, 'getMessages']);
+            Route::post('/conversations/{id}/messages', [ChatMessageController::class, 'sendMessage']);
+               Route::patch('/conversations/{id}/read', [ChatMessageController::class, 'markAsRead']);
+    });
+
+
+
+
+
+
+    

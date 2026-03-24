@@ -9,24 +9,18 @@ class TrainerResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $activePackages = $this->trainerPackages
-            ->where('is_active', true);
-
-        $startingPrice = $activePackages->min('price');
-
         return [
-            'id' => $this->id,
-            'name' => $this->user?->name,
-            'location' => $this->location,
-            'profile_image' => $this->user?->profile_image
-                ? asset('storage/' . $this->user->profile_image)
-                : null,
-            'bio' => $this->bio,
+            'id'               => $this->id,
+            'name'             => $this->user->name,
+            'profile_image'    => $this->user->profile_image,
+            'bio'              => $this->bio,
             'experience_years' => $this->experience_years,
-            'rating' => (float) $this->rating,
-            'total_reviews' => (int) $this->total_reviews,
-            'starting_price' => $startingPrice ? (float) $startingPrice : null,
-            'specializations' => $this->specializations->pluck('name')->values(),
+            'location'         => $this->location,
+            'rating'           => $this->rating,
+            'total_reviews'    => $this->total_reviews,
+            'specializations'  => $this->whenLoaded('specializations', fn () =>
+            $this->specializations->pluck('name')
+            ),
         ];
     }
 }

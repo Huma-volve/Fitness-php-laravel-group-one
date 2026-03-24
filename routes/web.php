@@ -4,6 +4,6 @@ use App\Http\Controllers\Api\BookingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('master');
 });
 Route::get('payment/success' , [BookingController::class, 'success']);

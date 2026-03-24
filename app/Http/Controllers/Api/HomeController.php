@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-// use App\Http\Requests\TrainerFilterRequest;
+use App\Http\Requests\Api\TrainerFilterRequest;
 use App\Http\Resources\TrainerResource;
 use App\Http\Resources\TrainerDetailsResource;
 
@@ -17,7 +17,7 @@ class HomeController extends Controller
      * GET /api/trainers
      * Home page: paginated list of trainers with filtering and sorting.
      */
-    public function index( $request): AnonymousResourceCollection
+    public function index(TrainerFilterRequest $request): AnonymousResourceCollection
     {
         $query = Trainer::query()
             ->with([

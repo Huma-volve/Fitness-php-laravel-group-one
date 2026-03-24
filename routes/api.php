@@ -72,7 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
 
-    Route::get('/trainers',          [HomeController::class, 'trainers']);
+    Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 });
 

@@ -46,6 +46,14 @@ class Trainer extends Model
     {
         return $this->hasMany(TrainerAvailabilities::class);
     }
+        public function availabilityExceptions()
+    {
+        return $this->hasMany(TrainerAvailabilityException::class);
+    }
+      public function activeTrainerPackages()
+    {
+        return $this->hasMany(TrainerPackage::class)->where('is_active', true);
+    }
 
     public function trainerPackages()
     {

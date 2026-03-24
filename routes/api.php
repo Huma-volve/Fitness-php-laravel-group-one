@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\TrainerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
+
+
+    Route::get('/trainers',          [HomeController::class, 'trainers']);
+    Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 });
 
 Route::prefix('landing')->group(function () {

@@ -1,16 +1,23 @@
 <?php
 
+use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\HomeController;
+use App\Http\Controllers\Api\LandingController;
+use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\ChatMessageController;
+use App\Models\ChatMessage;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\TrainerAvailabilityController;
 use App\Http\Controllers\Api\TrainerSessionController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\Api\Auth\OtpController;
-use App\Http\Controllers\Api\LandingController;
-use App\Http\Controllers\Api\NewsletterController;
-use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\ContactController;
+use App\Http\Controllers\Api\ProfileController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -60,11 +67,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout',         [AuthController::class, 'logout']);
     Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
     Route::get('/profile',         [AuthController::class, 'profile']);
-
-
     Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
+
+
+    Route::get('/trainers',          [HomeController::class, 'index']);
+    Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 });
 
 Route::prefix('landing')->group(function () {
@@ -73,13 +82,59 @@ Route::prefix('landing')->group(function () {
     Route::get('/packages', [LandingController::class, 'packages']);
     Route::get('/reviews', [ReviewController::class, 'index']);
     Route::get('/trainers/{trainerId}/reviews', [ReviewController::class, 'trainerReviews']);
+    Route::post('/contact', [ContactController::class, 'store']);
 });
 
 Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
     Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
     Route::post('/reviews', [ReviewController::class, 'store']);
+
+    Route::get('/profile', [ProfileController::class, 'profile']);
+    Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/uploadImage', [ProfileController::class, 'uploadImage']);
+    Route::delete('/removeImage', [ProfileController::class, 'removeImage']);
+    Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
+    Route::get('/packages', [ProfileController::class, 'currentPackages']);
+
+    // Progress & Activity
+    Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
+
+    // Workout History
+    Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
+
+    // Payment Methods
+    Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
+
+    // Add Payment Card
+    Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
 });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
+
+
+
+
+
+
+
+
+//////////////////// chat ///////////////////////
+Route::middleware('auth:sanctum')->group(function(){
+    
+      Route::post('/conversations', [ChatMessageController::class, 'startConversation']);
+       Route::get('/conversations', [ChatMessageController::class, 'getConversations']);
+          Route::get('/conversations/{id}/messages', [ChatMessageController::class, 'getMessages']);
+            Route::post('/conversations/{id}/messages', [ChatMessageController::class, 'sendMessage']);
+               Route::patch('/conversations/{id}/read', [ChatMessageController::class, 'markAsRead']);
+    });
+
+
+
+
+
+
+    
+Route::get('/search', [SearchController::class, 'search']);
+Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);
 

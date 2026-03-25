@@ -44,7 +44,7 @@ class Trainer extends Model
 
     public function availability()
     {
-        return $this->hasMany(TrainerAvailability::class);
+        return $this->hasMany(TrainerAvailabilities::class);
     }
 
     public function trainerPackages()

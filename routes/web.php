@@ -11,9 +11,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
 Route::get('/home', function () {
     return view('master');
 })->name('home');
+
+Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('admin.home');
+
 Route::get('payment/success' , [BookingController::class, 'success']);
 
 
@@ -38,7 +42,7 @@ Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name
 // });
 
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('bookings/stats',     [BookingStateController::class, 'stats'])->name('bookings.stats');
+//    Route::get('bookings/stats',     [BookingStateController::class, 'stats'])->name('bookings.stats');
     Route::get('bookings',           [AdminBookingController::class, 'index'])->name('bookings.index');
     Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
 });

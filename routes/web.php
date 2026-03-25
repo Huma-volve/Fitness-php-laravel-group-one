@@ -27,6 +27,10 @@ Route::put('/trainers/update/{id}', [trainerController::class, 'update'])->name(
 Route::get('login', [LoginController::class, 'index'])->name('login');
 Route::post('verifaylogin', [LoginController::class, 'verifaylogin'])->name('verifaylogin');
 
+=======
+Route::get('login',[LoginController::class,'index'])->name('login');
+Route::post('verifaylogin',[LoginController::class,'verifaylogin'])->name('verifaylogin');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('payment/success', [BookingController::class, 'success']);
 
 Route::middleware('auth:sanctum')->prefix('landing')->group(function () {

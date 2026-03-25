@@ -74,6 +74,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
+    Route::get('/search', [SearchController::class, 'search']);
 });
 
 Route::prefix('landing')->group(function () {
@@ -135,6 +136,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     
-Route::get('/search', [SearchController::class, 'search']);
+
 Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);
 

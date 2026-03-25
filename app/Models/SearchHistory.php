@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class SearchHistory extends Model
 {
     public $timestamps = false;
-
+     public $table = 'search_history';
     const CREATED_AT = 'created_at';
     const UPDATED_AT = null;
 

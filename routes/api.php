@@ -5,21 +5,17 @@ use App\Http\Controllers\Api\Auth\OtpController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ReviewController;
-<<<<<<< HEAD
 use App\Http\Controllers\ChatMessageController;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
-=======
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\TrainerAvailabilityController;
 use App\Http\Controllers\Api\TrainerSessionController;
->>>>>>> main
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\ProfileController;
-use Illuminate\Http\Request;
 
 
 Route::get('/user', function (Request $request) {
@@ -110,7 +106,6 @@ Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
-<<<<<<< HEAD
 
 
 
@@ -135,8 +130,6 @@ Route::middleware('auth:sanctum')->group(function(){
 
 
     
-=======
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);
 
->>>>>>> main

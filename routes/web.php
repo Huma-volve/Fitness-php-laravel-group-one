@@ -16,7 +16,7 @@ Route::get('/home', function () {
     return view('master');
 })->name('home');
 
-Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('admin.home');
+Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('admin.index');
 
 Route::get('payment/success' , [BookingController::class, 'success']);
 
@@ -32,7 +32,7 @@ Route::get('/trainers/edit/{id}', [trainerController::class, 'edit'])->name('tra
 Route::put('/trainers/update/{id}', [trainerController::class, 'update'])->name('trainers.update');
 Route::get('login',[LoginController::class,'index'])->name('login');
 Route::post('verifaylogin',[LoginController::class,'verifaylogin'])->name('verifaylogin');
-
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('payment/success', [BookingController::class, 'success']);
 
 // Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
@@ -41,8 +41,8 @@ Route::get('/reviews/{trainerId}', [ReviewController::class, 'trainerReviews'])-
 Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
 // });
 
+
 Route::prefix('admin')->name('admin.')->group(function () {
-//    Route::get('bookings/stats',     [BookingStateController::class, 'stats'])->name('bookings.stats');
     Route::get('bookings',           [AdminBookingController::class, 'index'])->name('bookings.index');
     Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
 });

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReplyReviewRequest;
 use App\Models\Review;
 use App\Services\ReviewService;
-use App\Http\Requests\ReplyReviewRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -17,6 +18,12 @@ class ReviewController extends Controller
 
     public function trainerReviews($trainerId, Request $request)
     {
+        $trainer = Auth::user()->trainer;
+
+        if (!$trainer || $trainer->id != $trainerId) {
+            abort(403);
+        }
+
         $filters = $request->only(['username', 'star', 'comment', 'date_from', 'date_to']);
         $sortBy = $request->get('sort_by', 'date');
 

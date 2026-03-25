@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Web\Admin\AdminBookingController;
+use App\Http\Controllers\Web\Admin\BookingStateController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\trainerController;
 use App\Http\Controllers\ReviewController;
@@ -9,9 +11,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect()->route('login');
 });
+
 Route::get('/home', function () {
-    return view('master'); 
+    return view('master');
 })->name('home');
+
+Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('admin.index');
+
 Route::get('payment/success' , [BookingController::class, 'success']);
 
 
@@ -34,3 +40,9 @@ Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index'
 Route::get('/reviews/{trainerId}', [ReviewController::class, 'trainerReviews'])->name('reviews.trainer');
 Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
 // });
+
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('bookings',           [AdminBookingController::class, 'index'])->name('bookings.index');
+    Route::get('bookings/{booking}', [AdminBookingController::class, 'show'])->name('bookings.show');
+});

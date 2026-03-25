@@ -15,12 +15,12 @@
                         <i class="fas fa-star"></i>
                     </div>
                     <div class="stat-info">
-                        <span class="stat-value">{{ $avaregeRating}}</span>
+                        <span class="stat-value">{{ $averageRating}}</span>
                         <span class="stat-label">Average Rating</span>
                     </div>
                     <div class="review-rating stars">
                         @for ($i = 0; $i < 5; $i++)
-                            @if ($i < floor($avaregeRating))
+                            @if ($i < floor($averageRating))
                                 ★
                             @else
                                 ☆
@@ -63,7 +63,7 @@
 
                 <h2>List of Reviews</h2>
                 <!-- Filter Form -->
-                <form method="GET" action="{{ route('reviews.trainer', $trainerId) }}" class="reviews-filter">
+                <form method="GET" action="{{ route('reviews.trainer') }}" class="reviews-filter">
                     <div class="filter-row">
                         <!-- Filter by Username -->
                         <div class="filter-item">
@@ -103,7 +103,7 @@
 
                         <div class="filter-item">
                             <button type="submit">Filter</button>
-                            <a href="{{ route('reviews.trainer', $trainerId) }}" class="btn-reset">Reset</a>
+                            <a href="{{ route('reviews.trainer') }}" class="btn-reset">Reset</a>
                         </div>
                     </div>
                 </form>

@@ -57,6 +57,27 @@
 
                                 <table id="bootstrap-data-table" class="table table-striped table-bordered" style="margin-top: 10px;">
                                    
+                                 <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="data-table">
+                                        @foreach ($users as $user )
+                                            <tr>
+                                                    <td>{{ $user->name }}</td>
+                                                    <td>{{ $user->email }}</td>
+                                                    <td>{{ $user->role }}</td>
+                                                
+                                                    <td>
+                                                        <a href="search/search_text/userInfo/{{$user->id}}" class="btn btn-success"> view</a>
+                                                    </td>
+                                            </tr>
+                                    @endforeach
+                                </tbody >
                                    
 
                                 </table>
@@ -93,15 +114,7 @@ $('#search_text').on('input', function() {
 
          
                html += `
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
+               
             `;
                $.each(data, function (index, user) {
                if(user.name){
@@ -111,14 +124,14 @@ $('#search_text').on('input', function() {
                         <td>${user.email}</td>
                         <td>${user.role}</td>
                         <td>
-                              <a href="/search/search_text/user_info" class="btn btn-cuccess"> view</a>
+                              <a href="search/search_text/userInfo/${user.id}" class="btn btn-success"> view</a>
                         </td>
                     </tr>
                 `;
                }     
                 
             });
-          html += `</tbody>`;
+          
 
 
 
@@ -131,7 +144,7 @@ $('#search_text').on('input', function() {
                
 
             
-            $('#bootstrap-data-table').html(html);
+            $('#data-table').html(html);
 
             
             

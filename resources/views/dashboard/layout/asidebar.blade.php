@@ -8,6 +8,16 @@
               
 
                
+           <li class="menu-title">Trainers</li>
+
+               <li>
+               <a href="{{ route('gettrainer') }}">
+                    <i class="menu-icon fa fa-users"></i> Trainers
+               </a>
+               </li>
+               
+
+               
                <li>
                     <a href="{{route('search')}}"> <i class="menu-icon fa fa-search"></i>Search </a>
                </li>

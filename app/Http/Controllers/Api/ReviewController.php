@@ -24,12 +24,14 @@ class ReviewController extends Controller
         $request->validate([
             'trainer_id' => 'required|exists:trainers,id',
             'rating' => 'required|integer|min:1|max:5',
+            'reply' => 'nullable|string',
             'comment' => 'nullable|string'
         ]);
 
         $review = Review::create([
             'trainer_id' => $request->trainer_id,
             'user_id'    => auth()->id(),
+            'reply'      => $request->reply,
             'rating'     => $request->rating,
             'comment'    => $request->comment
         ]);

@@ -13,10 +13,8 @@ class SearchAdminController extends Controller
 {
      public function index(){
         
-        $User = [];
-        $Booking = [];
-        $Payment = [];
-        return view('dashboard.admin.search', compact('User','Booking','Payment')  );
+        $users =  User:: select("name", "email" ,"id" ,"role")->get();
+        return view('dashboard.admin.search' ,compact('users') );
 
         
     }
@@ -28,25 +26,20 @@ class SearchAdminController extends Controller
        
             $data = User::where('name', 'like', "%$q%")
             ->orWhere('email', 'like', "%$q%")
-            ->limit(5)
+            ->orWhere('role', 'like', "%$q%")
+            
             ->get();
 
             return response()->json($data);
+    }
+    public function searchInfo( $id)
+    {
+        
 
+       
+            $user = User::findOrFail($id);
            
-        
 
-       
-
-        
-        
-
-        
-
-       
-
-        
-
-        return response()->json([]);
+           return view('dashboard.admin.searchUser', compact('user') );
     }
 }

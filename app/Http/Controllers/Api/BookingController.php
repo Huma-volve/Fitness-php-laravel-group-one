@@ -11,6 +11,7 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\BookingService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +22,8 @@ class BookingController extends Controller
 {
     use AuthorizesRequests;
     public function __construct(
-        private readonly BookingService $bookingService
+        private readonly BookingService      $bookingService,
+        private readonly NotificationService $notificationService,
     ) {}
 
     /**
@@ -116,6 +118,7 @@ class BookingController extends Controller
                 'message' => $e->getMessage(),
             ], 422);
         }
+   
 
         return response()->json([
             'message' => 'Payment confirmed. Your sessions are now scheduled.',
@@ -146,6 +149,9 @@ class BookingController extends Controller
             'session_start' => $start,
             'session_end'   => $start->copy()->addHour(),
         ]);
+
+        
+        $this->notificationService->sessionRescheduled($session->fresh(), auth()->id());
 
         return response()->json([
             'message' => 'Session rescheduled successfully.',

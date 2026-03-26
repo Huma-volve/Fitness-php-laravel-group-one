@@ -2,21 +2,22 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\TrainerAvailabilityController;
+use App\Http\Controllers\Api\TrainerSessionController;
 use App\Http\Controllers\ChatMessageController;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\SearchController;
-use App\Http\Controllers\Api\BookingController;
-use App\Http\Controllers\Api\PackageController;
-use App\Http\Controllers\Api\TrainerAvailabilityController;
-use App\Http\Controllers\Api\TrainerSessionController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ContactController;
-use App\Http\Controllers\Api\ProfileController;
 
 
 Route::get('/user', function (Request $request) {
@@ -71,9 +72,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
-
+// ── Home & Trainers ───────────────────────────────────────────────────────
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
+
+    Route::get('notifications',[NotificationController::class,'index']);
+    Route::patch('notifications/{id}/mark-read',[NotificationController::class,'markAsRead']);
+    Route::patch('notifications/mark-all-read',[NotificationController::class,'markAllAsRead']);
+    Route::delete('notifications/{id}',[NotificationController::class,'destroy']);
+
 });
 
 Route::prefix('landing')->group(function () {

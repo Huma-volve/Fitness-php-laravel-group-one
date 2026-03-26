@@ -3,12 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Services\NotificationService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
+    public function __construct(
+        private readonly NotificationService $notificationService,
+    ) {}
     public function profile(Request $request)
     {
         $user = $request->user(); // جلب المستخدم المسجل الدخول
@@ -40,6 +44,8 @@ class ProfileController extends Controller
 
         // تحديث بيانات المستخدم
         $user->update($validated);
+
+        $this->notificationService->accountUpdated($user);
 
         return response()->json([
             'success' => true,

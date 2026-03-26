@@ -88,7 +88,7 @@ Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
     Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::get('/reviews', [ReviewController::class, 'index']);
-    Route::get('/trainers/{trainerId}/reviews', [ReviewController::class, 'trainerReviews']);
+    Route::get('/trainers/reviews', [ReviewController::class, 'trainerReviews']);
     Route::get('/profile', [ProfileController::class, 'profile']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/uploadImage', [ProfileController::class, 'uploadImage']);

@@ -20,20 +20,26 @@ class LoginController extends Controller
         'password'=>$request->password
     ])){
 
-        
-        
-        
-        if(Auth::user()->role=='admin' || Auth::user()->role=='trainer'){
-            return redirect()->route('home');
-            }else{
-                Auth::logout();
-                return back()->with('error','You are not authorized');
-                }
-                
-                }  else{
+
+            if(Auth::user()->role=='admin' ){
+                return redirect()->route('admin.index');
+            }
+            elseif (Auth::user()->role=='trainer'){
+                return redirect()->route('home');
+            }else
+            {
+                    Auth::logout();
+                    return back()->with('error','You are not authorized');
+            }
+    }  else{
           return back()->with('error', 'Email or password is wrong');
     }
-    
+
+    }
+     public function logout()
+    {
+        Auth::logout();
+        return redirect('/login');
     }
  public function logout()
 {

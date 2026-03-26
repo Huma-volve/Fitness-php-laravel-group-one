@@ -83,35 +83,34 @@ Route::prefix('landing')->group(function () {
     Route::get('/packages', [LandingController::class, 'packages']);
     Route::post('/contact', [ContactController::class, 'store']);
 });
+// ======= Landing API للمستخدمين العاديين/المتدربين =======
+Route::prefix('landing')->middleware('auth:sanctum')->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
+});
 
-Route::middleware('auth:sanctum')
-    ->group(function () {
 
-        Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
+// ======= Dashboard (المدربين والإدمن) =======
+Route::middleware(['auth:sanctum'])->group(function () {
 
-        Route::prefix('reviews')->group(function () {
-            Route::post('/', [ReviewController::class, 'store']);
-            Route::get('/all', [ReviewController::class, 'index']);
-            Route::get('/', [ReviewController::class, 'trainerReviews']);
-        });
-
-        Route::prefix('profile')->group(function () {
-            Route::get('/', [ProfileController::class, 'profile']);
-            Route::put('/', [ProfileController::class, 'update']);
-
-            Route::post('/upload-image', [ProfileController::class, 'uploadImage']);
-            Route::delete('/remove-image', [ProfileController::class, 'removeImage']);
-
-            Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
-            Route::get('/packages', [ProfileController::class, 'currentPackages']);
-
-            Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
-            Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
-
-            Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
-            Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
-        });
+    Route::prefix('reviews')->group(function () {
+        Route::get('/', [ReviewController::class, 'trainerReviews']);
     });
+
+    Route::prefix('profile')->group(function () {
+        Route::get('/', [ProfileController::class, 'profile']);
+        Route::put('/', [ProfileController::class, 'update']);
+        Route::post('/upload-image', [ProfileController::class, 'uploadImage']);
+        Route::delete('/remove-image', [ProfileController::class, 'removeImage']);
+        Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
+        Route::get('/packages', [ProfileController::class, 'currentPackages']);
+        Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
+        Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
+        Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
+        Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
+    });
+});
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
@@ -139,7 +138,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-    
+
 
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);

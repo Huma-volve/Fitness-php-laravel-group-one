@@ -23,17 +23,18 @@ class ReviewController extends Controller
     {
         $user = Auth::user();
 
-        // Trainers can view their own reviews. Others are redirected to global review listing.
-        if (!$user->isTrainer() || !$user->trainerProfile) {
-            return $this->index();
+        // تحقق من الدور فقط
+        if (!$user->isTrainer()) {
+            abort(403); // فقط لمن ليسوا مدربين
         }
 
-        $trainer = $user->trainerProfile;
+        // إذا كان لديه ملف مدرب، استخدم الـID، وإذا لم يكن لديه، استخدم ID المستخدم نفسه
+        $trainerId = $user->trainerProfile?->id ?? $user->id;
 
         $filters = $request->only(['username', 'star', 'comment', 'date_from', 'date_to']);
         $sortBy = $request->get('sort_by', 'date');
 
-        $service = new ReviewService($trainer->id, $filters);
+        $service = new ReviewService($trainerId, $filters);
 
         $reviews = $service->getReviews($sortBy);
         $stats = $service->getStats();
@@ -43,7 +44,6 @@ class ReviewController extends Controller
             'sortBy' => $sortBy,
         ]));
     }
-
     public function reply(ReplyReviewRequest $request, Review $review)
     {
         $user = Auth::user();

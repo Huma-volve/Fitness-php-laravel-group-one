@@ -83,30 +83,34 @@ Route::prefix('landing')->group(function () {
     Route::post('/contact', [ContactController::class, 'store']);
 });
 
-Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
-    Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
-    Route::post('/reviews', [ReviewController::class, 'store']);
-    Route::get('/reviews', [ReviewController::class, 'index']);
-    Route::get('/trainers/reviews', [ReviewController::class, 'trainerReviews']);
-    Route::get('/profile', [ProfileController::class, 'profile']);
-    Route::put('/profile', [ProfileController::class, 'update']);
-    Route::post('/uploadImage', [ProfileController::class, 'uploadImage']);
-    Route::delete('/removeImage', [ProfileController::class, 'removeImage']);
-    Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
-    Route::get('/packages', [ProfileController::class, 'currentPackages']);
+Route::middleware('auth:sanctum')
+    ->group(function () {
 
-    // Progress & Activity
-    Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
+        Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
 
-    // Workout History
-    Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
+        Route::prefix('reviews')->group(function () {
+            Route::post('/', [ReviewController::class, 'store']);
+            Route::get('/all', [ReviewController::class, 'index']);
+            Route::get('/', [ReviewController::class, 'trainerReviews']);
+        });
 
-    // Payment Methods
-    Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
+        Route::prefix('profile')->group(function () {
+            Route::get('/', [ProfileController::class, 'profile']);
+            Route::put('/', [ProfileController::class, 'update']);
 
-    // Add Payment Card
-    Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
-});
+            Route::post('/upload-image', [ProfileController::class, 'uploadImage']);
+            Route::delete('/remove-image', [ProfileController::class, 'removeImage']);
+
+            Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
+            Route::get('/packages', [ProfileController::class, 'currentPackages']);
+
+            Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
+            Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
+
+            Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
+            Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
+        });
+    });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 

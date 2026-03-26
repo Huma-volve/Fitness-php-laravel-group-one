@@ -23,15 +23,12 @@ class ReviewController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->isTrainer()) {
-            abort(403);
+        // Trainers can view their own reviews. Others are redirected to global review listing.
+        if (!$user->isTrainer() || !$user->trainerProfile) {
+            return $this->index();
         }
 
         $trainer = $user->trainerProfile;
-
-        if (!$trainer) {
-            abort(403);
-        }
 
         $filters = $request->only(['username', 'star', 'comment', 'date_from', 'date_to']);
         $sortBy = $request->get('sort_by', 'date');

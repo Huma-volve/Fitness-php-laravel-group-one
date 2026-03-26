@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\trainerController;
+use App\Http\Controllers\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -25,3 +26,11 @@ Route::get('/trainers/edit/{id}', [trainerController::class, 'edit'])->name('tra
 Route::put('/trainers/update/{id}', [trainerController::class, 'update'])->name('trainers.update');
 Route::get('login',[LoginController::class,'index'])->name('login');
 Route::post('verifaylogin',[LoginController::class,'verifaylogin'])->name('verifaylogin');
+
+Route::get('payment/success', [BookingController::class, 'success']);
+
+// Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
+Route::get('/reviews', [ReviewController::class, 'index'])->name('reviews.index');
+Route::get('/reviews/{trainerId}', [ReviewController::class, 'trainerReviews'])->name('reviews.trainer');
+Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');
+// });

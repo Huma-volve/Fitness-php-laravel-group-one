@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Web\SearchAdminController;
 use App\Http\Controllers\Web\Admin\AdminBookingController;
 use App\Http\Controllers\Web\Admin\BookingStateController;
 use App\Http\Controllers\LoginController;
@@ -20,6 +21,9 @@ Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('a
 
 Route::get('payment/success', [BookingController::class, 'success']);
 
+Route::get('/search' , [SearchAdminController::class, 'index'])->name('search');
+Route::get('/search/search_text' , [SearchAdminController::class, 'searchText']);
+Route::get('/search/search_text/userInfo/{id}' , [SearchAdminController::class, 'searchInfo']);
 
 
 ///////////////////// get trainer ///////////

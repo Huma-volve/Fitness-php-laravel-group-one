@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\TraineePaymentController;
 use App\Http\Controllers\ChatMessageController;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
@@ -34,6 +35,11 @@ Route::get('trainers/{trainer}/schedule',     [TrainerAvailabilityController::cl
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:trainee')->group(function () {
+        // payments and cards info
+        Route::get('payments-history' , [TraineePaymentController::class, 'getPaymentsHistory']);
+        Route::post('/cards', [TraineePaymentController::class, 'storeCard']);
+        Route::get('/cards', [TraineePaymentController::class, 'getCards']);
+        Route::delete('/cards/{id}', [TraineePaymentController::class, 'destroyCard']);
 
         Route::get('bookings',                        [BookingController::class, 'index']);
         Route::get('bookings/{booking}',              [BookingController::class, 'show']);

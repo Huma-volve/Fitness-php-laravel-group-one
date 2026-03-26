@@ -67,17 +67,19 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
-
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout',         [AuthController::class, 'logout']);
-    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
-    Route::get('/profile',         [AuthController::class, 'profile']);
-    Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
+ Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
 
+
+    Route::post('/logout',         [AuthController::class, 'logout']);
+    Route::get('/profile',         [AuthController::class, 'profile']);
+    
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
+
+    
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
     Route::get('/search', [SearchController::class, 'search']);

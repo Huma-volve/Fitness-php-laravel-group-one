@@ -6,15 +6,30 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Trainer;
 use App\Models\Specialization;
+use App\Models\SearchHistory;
 use App\Models\User;
 use App\Models\TraineeSession;
 
 class SearchController extends Controller
 {
+    public function index(){
+        $user_id = auth()->id();
+
+//        
+        $search_histories=SearchHistory::where('user_id',$user_id)->get();
+
+        return response()->json([
+            'data' => $search_histories
+        ]);
+    }
     public function search( Request $request){
         $valdiate = $request->validate([
             'search_value' => 'required',
         ]);
+
+          $user_id = auth()->user()->id;
+
+        
 
         $dataSearch = User::query()->where('name', 'like',"%{$request->search_value}%")
                     ->where('role', "trainer")
@@ -25,7 +40,18 @@ class SearchController extends Controller
             $dataSearch = Specialization::query()->where('name', 'like',"%{$request->search_value}%")
                     ->with(['trainers.user','trainers.availability' ,'trainers.trainerPackages.package','trainers.sessions'])
                     ->limit('10')->get();
-        };        
+        };
+
+        
+        $dataSearchSave = [
+            'user_id' => $user_id,
+            'search_text' => $request->search_value,
+        ];
+
+        
+        SearchHistory::create($dataSearchSave);
+        
+        
         return response()->json([
             'status' => true,
             'data' => $dataSearch

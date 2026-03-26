@@ -21,9 +21,9 @@ Route::get('/admin/home',     [BookingStateController::class, 'stats'])->name('a
 
 Route::get('payment/success', [BookingController::class, 'success']);
 
-Route::get('/search' , [SearchAdminController::class, 'index'])->name('search');
-Route::get('/search/search_text' , [SearchAdminController::class, 'searchText']);
-Route::get('/search/search_text/userInfo/{id}' , [SearchAdminController::class, 'searchInfo']);
+Route::get('/search', [SearchAdminController::class, 'index'])->name('search');
+Route::get('/search/search_text', [SearchAdminController::class, 'searchText']);
+Route::get('/search/search_text/userInfo/{id}', [SearchAdminController::class, 'searchInfo']);
 
 
 ///////////////////// get trainer ///////////
@@ -42,7 +42,7 @@ Route::post('verifaylogin', [LoginController::class, 'verifaylogin'])->name('ver
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::get('payment/success', [BookingController::class, 'success']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/reviews/all', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('/reviews', [ReviewController::class, 'trainerReviews'])->name('reviews.trainer');
     Route::post('/reviews/{review}/reply', [ReviewController::class, 'reply'])->name('reviews.reply');

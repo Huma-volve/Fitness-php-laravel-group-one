@@ -45,7 +45,7 @@ class ReviewService
         $allReviews = $this->getFilteredQuery();
 
         return [
-            'avaregeRating' => round($allReviews->avg('rating') ?: 0, 2),
+            'averageRating' => round($allReviews->avg('rating') ?: 0, 2),
             'totalReviews' => $allReviews->count(),
             'positiveReviews' => $allReviews->where('rating', '>=', 4)->count(),
             'totalcomments' => $allReviews->whereNotNull('comment')->count(),

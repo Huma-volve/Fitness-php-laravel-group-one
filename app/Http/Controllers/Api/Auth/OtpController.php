@@ -37,7 +37,7 @@ class OtpController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => 'OTP is ready $code ',
+            'message' => "OTP is ready $code ",
         ], 200);
     }
 

@@ -11,6 +11,7 @@ use App\Http\Resources\BookingResource;
 use App\Models\Booking;
 use App\Models\Payment;
 use App\Services\BookingService;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +22,8 @@ class BookingController extends Controller
 {
     use AuthorizesRequests;
     public function __construct(
-        private readonly BookingService $bookingService
+        private readonly BookingService      $bookingService,
+        private readonly NotificationService $notificationService,
     ) {}
 
     /**
@@ -111,11 +113,18 @@ class BookingController extends Controller
 
         try {
             $this->bookingService->confirmPayment($booking);
+                 $this->notificationService->send(
+                userId: auth()->id(),
+                type: 'payment_success',
+                title: 'Payment Completed',
+                message: 'Your booking has been confirmed successfully.'
+            );
         } catch (\RuntimeException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
             ], 422);
         }
+   
 
         return response()->json([
             'message' => 'Payment confirmed. Your sessions are now scheduled.',
@@ -147,6 +156,9 @@ class BookingController extends Controller
             'session_end'   => $start->copy()->addHour(),
         ]);
 
+        
+        $this->notificationService->sessionRescheduled($session->fresh(), auth()->id());
+
         return response()->json([
             'message' => 'Session rescheduled successfully.',
             'data'    => new BookingResource(
@@ -163,6 +175,12 @@ class BookingController extends Controller
         $this->authorize('cancel', $booking);
 
         $this->bookingService->cancel($booking, $request->cancel_reason);
+            $this->notificationService->send(
+            userId: auth()->id(),
+            type: 'booking_cancelled_self',
+            title: 'Cancelled',
+            message: 'You cancelled your booking successfully.'
+        );
 
         return response()->json([
             'message' => 'Booking cancelled successfully.',

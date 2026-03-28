@@ -2,22 +2,23 @@
 
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\Api\Auth\OtpController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\HomeController;
 use App\Http\Controllers\Api\LandingController;
 use App\Http\Controllers\Api\NewsletterController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PackageController;
+use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\SearchController;
+use App\Http\Controllers\Api\TrainerAvailabilityController;
+use App\Http\Controllers\Api\TrainerSessionController;
 use App\Http\Controllers\Api\TraineePaymentController;
 use App\Http\Controllers\ChatMessageController;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\SearchController;
-use App\Http\Controllers\Api\BookingController;
-use App\Http\Controllers\Api\PackageController;
-use App\Http\Controllers\Api\TrainerAvailabilityController;
-use App\Http\Controllers\Api\TrainerSessionController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ContactController;
-use App\Http\Controllers\Api\ProfileController;
 
 
 Route::get('/user', function (Request $request) {
@@ -73,6 +74,7 @@ Route::post('/login',    [AuthController::class, 'login']);
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
+// ── Home & Trainers ───────────────────────────────────────────────────────
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -87,6 +89,12 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
+
+    Route::get('notifications',[NotificationController::class,'index']);
+    Route::patch('notifications/{id}/mark-read',[NotificationController::class,'markRead']);
+    Route::patch('notifications/mark-all-read',[NotificationController::class,'markAllAsRead']);
+    Route::delete('notifications/{id}/delete',[NotificationController::class,'destroy']);
+
     Route::get('/search', [SearchController::class, 'search']);
 });
 // ======= Public Landing API (No Authentication Required) =======

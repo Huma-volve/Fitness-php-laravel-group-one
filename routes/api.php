@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
 use App\Http\Controllers\Api\TrainerAvailabilityController;
 use App\Http\Controllers\Api\TrainerSessionController;
+use App\Http\Controllers\Api\TraineePaymentController;
 use App\Http\Controllers\ChatMessageController;
 use App\Models\ChatMessage;
 use Illuminate\Http\Request;
@@ -35,6 +36,11 @@ Route::get('trainers/{trainer}/schedule',     [TrainerAvailabilityController::cl
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:trainee')->group(function () {
+        // payments and cards info
+        Route::get('payments-history' , [TraineePaymentController::class, 'getPaymentsHistory']);
+        Route::post('/cards', [TraineePaymentController::class, 'storeCard']);
+        Route::get('/cards', [TraineePaymentController::class, 'getCards']);
+        Route::delete('/cards/{id}', [TraineePaymentController::class, 'destroyCard']);
 
         Route::get('bookings',                        [BookingController::class, 'index']);
         Route::get('bookings/{booking}',              [BookingController::class, 'show']);
@@ -64,15 +70,23 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout',         [AuthController::class, 'logout']);
-    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
-    Route::get('/profile',         [AuthController::class, 'profile']);
-    Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
+ Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
     Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
     Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
 // ── Home & Trainers ───────────────────────────────────────────────────────
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/logout',         [AuthController::class, 'logout']);
+    Route::get('/profile',         [AuthController::class, 'profile']);
+        Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
+
+    });
+
+    Route::middleware('auth:sanctum')->group(function () {
+
+    
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 
@@ -83,37 +97,56 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/search', [SearchController::class, 'search']);
 });
-
+// ======= Public Landing API (No Authentication Required) =======
 Route::prefix('landing')->group(function () {
-    Route::get('/stats',    [LandingController::class, 'stats']);
+
+    Route::get('/stats', [LandingController::class, 'stats']);
+
     Route::get('/trainers', [LandingController::class, 'trainers']);
+
     Route::get('/packages', [LandingController::class, 'packages']);
+
     Route::post('/contact', [ContactController::class, 'store']);
 });
-
+// ======= Authenticated Users (Trainees) =======
 Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
-    Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
+
     Route::post('/reviews', [ReviewController::class, 'store']);
+
     Route::get('/reviews', [ReviewController::class, 'index']);
-    Route::get('/trainers/reviews', [ReviewController::class, 'trainerReviews']);
-    Route::get('/profile', [ProfileController::class, 'profile']);
-    Route::put('/profile', [ProfileController::class, 'update']);
-    Route::post('/uploadImage', [ProfileController::class, 'uploadImage']);
-    Route::delete('/removeImage', [ProfileController::class, 'removeImage']);
+
+    Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
+});
+
+// ======= Trainee Dashboard =======
+Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
+
+    Route::get('/', [ProfileController::class, 'profile']);
+
+    Route::put('/', [ProfileController::class, 'update']);
+
+    Route::post('/upload-image', [ProfileController::class, 'uploadImage']);
+
+    Route::delete('/remove-image', [ProfileController::class, 'removeImage']);
+
+    Route::post('/fitness-profile', [ProfileController::class, 'storeFitnessProfile']);
+
     Route::get('/sessions', [ProfileController::class, 'upcomingSessions']);
+
     Route::get('/packages', [ProfileController::class, 'currentPackages']);
 
-    // Progress & Activity
     Route::get('/progress-activity', [ProfileController::class, 'progressActivity']);
 
-    // Workout History
     Route::get('/workout-history', [ProfileController::class, 'workoutHistory']);
 
-    // Payment Methods
     Route::get('/payment-methods', [ProfileController::class, 'paymentMethods']);
 
-    // Add Payment Card
     Route::post('/payment-methods', [ProfileController::class, 'addPaymentMethod']);
+});
+// ======= Trainer Dashboard =======
+Route::middleware('auth:sanctum')->prefix('trainer')->group(function () {
+
+    Route::get('/reviews', [ReviewController::class, 'trainerReviews']);
 });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
@@ -142,7 +175,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
-    
+
 
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);

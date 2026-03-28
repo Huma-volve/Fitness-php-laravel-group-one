@@ -93,4 +93,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(SearchHistory::class);
     }
+
+    public function cards()
+    {
+        return $this->hasMany(UserCard::class);
+    }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Services\NotificationService;
+use App\Models\FitnessProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -93,17 +94,44 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        if ($user->profile_image && \Storage::disk('public')->exists($user->profile_image)) {
+        if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
             Storage::disk('public')->delete($user->profile_image);
             $user->profile_image = null;
             $user->save();
         }
+        
         $this->notificationService->accountUpdated($user);
 
         return response()->json([
             'success' => true,
             'message' => 'Profile image removed successfully',
             'profile_image' => null
+        ]);
+    }
+    public function storeFitnessProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'gender' => 'required|string|in:male,female',
+            'age' => 'required|integer|min:10|max:100',
+            'height_cm' => 'required|integer|min:100|max:250',
+            'weight_kg' => 'required|numeric|min:30|max:300',
+            'fitness_goal' => 'required|string|max:255',
+            'fitness_level' => 'required|string|max:255',
+            'workout_location' => 'required|string|max:255',
+            'preferred_training_days' => 'required|integer|min:1|max:7'
+        ]);
+
+        $fitnessProfile = FitnessProfile::updateOrCreate(
+            ['user_id' => $user->id],
+            $validated
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Fitness profile saved successfully',
+            'data' => $fitnessProfile
         ]);
     }
     public function upcomingSessions(Request $request)
@@ -147,7 +175,6 @@ class ProfileController extends Controller
                 'packages.description',
                 'packages.sessions',
                 'packages.duration_days',
-
                 'trainer_packages.price',
                 'trainer_packages.is_active'
             ]);

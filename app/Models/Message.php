@@ -12,11 +12,11 @@ class Message extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
+        'conversation_id',
         'sender_id',
-        'name',
-        'email',
         'subject',
-        'message',
+        'body',
+        'status',
     ];
 
     protected function casts(): array

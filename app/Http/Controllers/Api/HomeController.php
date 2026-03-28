@@ -53,8 +53,7 @@ class HomeController extends Controller
             });
         }
 
-        // ── Sorting ───────────────────────────────────────────────────────────────
-
+        
         $sortDir = $request->input('sort_dir', 'desc');
 
         match ($request->input('sort_by', 'rating')) {
@@ -72,7 +71,7 @@ class HomeController extends Controller
    
     public function showTrainer(Trainer $trainer): JsonResponse
     {
-        // Abort if trainer's account is inactive
+        
         abort_if($trainer->user->status !== 'active', 404, 'Trainer not found.');
 
         $trainer->load([

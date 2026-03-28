@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role'=>RoleMiddleware::class
         ]);
+         $middleware->appendToGroup('api', [
+        \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

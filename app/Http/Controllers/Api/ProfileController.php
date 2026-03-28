@@ -111,7 +111,7 @@ class ProfileController extends Controller
             'fitness_goal' => 'required|string|max:255',
             'fitness_level' => 'required|string|max:255',
             'workout_location' => 'required|string|max:255',
-            'preferred_training_days' => 'required|integer|min:1|max:7'
+            'preferred_training_days' => 'required|string|in:1-2,3-4,5+'
         ]);
 
         $fitnessProfile = FitnessProfile::updateOrCreate(

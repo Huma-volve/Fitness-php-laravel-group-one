@@ -113,6 +113,12 @@ class BookingController extends Controller
 
         try {
             $this->bookingService->confirmPayment($booking);
+                 $this->notificationService->send(
+                userId: auth()->id(),
+                type: 'payment_success',
+                title: 'Payment Completed',
+                message: 'Your booking has been confirmed successfully.'
+            );
         } catch (\RuntimeException $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -169,6 +175,12 @@ class BookingController extends Controller
         $this->authorize('cancel', $booking);
 
         $this->bookingService->cancel($booking, $request->cancel_reason);
+            $this->notificationService->send(
+            userId: auth()->id(),
+            type: 'booking_cancelled_self',
+            title: 'Cancelled',
+            message: 'You cancelled your booking successfully.'
+        );
 
         return response()->json([
             'message' => 'Booking cancelled successfully.',

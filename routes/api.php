@@ -36,15 +36,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:trainee')->group(function () {
 
-        Route::get ('bookings',                        [BookingController::class, 'index']);
-        Route::get ('bookings/{booking}',              [BookingController::class, 'show']);
+        Route::get('bookings',                        [BookingController::class, 'index']);
+        Route::get('bookings/{booking}',              [BookingController::class, 'show']);
 
         Route::post('bookings/schedule',               [BookingController::class, 'schedule']);
 
         Route::post('bookings/{booking}/pay',          [BookingController::class, 'pay']);
         Route::post('bookings/{booking}/confirm',      [BookingController::class, 'confirm']);
 
-        Route::put ('bookings/{booking}/reschedule',   [BookingController::class, 'reschedule']);
+        Route::put('bookings/{booking}/reschedule',   [BookingController::class, 'reschedule']);
         Route::delete('bookings/{booking}/cancel',     [BookingController::class, 'cancel']);
     });
 
@@ -77,25 +77,25 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 
     Route::get('notifications',[NotificationController::class,'index']);
-    Route::patch('notifications/{id}/mark-read',[NotificationController::class,'markAsRead']);
+    Route::patch('notifications/{id}/mark-read',[NotificationController::class,'markRead']);
     Route::patch('notifications/mark-all-read',[NotificationController::class,'markAllAsRead']);
-    Route::delete('notifications/{id}',[NotificationController::class,'destroy']);
+    Route::delete('notifications/{id}/delete',[NotificationController::class,'destroy']);
 
+    Route::get('/search', [SearchController::class, 'search']);
 });
 
 Route::prefix('landing')->group(function () {
     Route::get('/stats',    [LandingController::class, 'stats']);
     Route::get('/trainers', [LandingController::class, 'trainers']);
     Route::get('/packages', [LandingController::class, 'packages']);
-    Route::get('/reviews', [ReviewController::class, 'index']);
-    Route::get('/trainers/{trainerId}/reviews', [ReviewController::class, 'trainerReviews']);
     Route::post('/contact', [ContactController::class, 'store']);
 });
 
 Route::middleware('auth:sanctum')->prefix('landing')->group(function () {
     Route::post('/newsletter', [NewsletterController::class, 'subscribe']);
     Route::post('/reviews', [ReviewController::class, 'store']);
-
+    Route::get('/reviews', [ReviewController::class, 'index']);
+    Route::get('/trainers/reviews', [ReviewController::class, 'trainerReviews']);
     Route::get('/profile', [ProfileController::class, 'profile']);
     Route::put('/profile', [ProfileController::class, 'update']);
     Route::post('/uploadImage', [ProfileController::class, 'uploadImage']);
@@ -127,21 +127,22 @@ Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
 
 
 //////////////////// chat ///////////////////////
-Route::middleware('auth:sanctum')->group(function(){
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/conversations', [ChatMessageController::class, 'startConversation']);
+    Route::get('/conversations', [ChatMessageController::class, 'getConversations']);
+    Route::get('/conversations/{id}/messages', [ChatMessageController::class, 'getMessages']);
+    Route::post('/conversations/{id}/messages', [ChatMessageController::class, 'sendMessage']);
+    Route::patch('/conversations/{id}/read', [ChatMessageController::class, 'markAsRead']);
+});
+
+
+
+
+
+
+
     
-      Route::post('/conversations', [ChatMessageController::class, 'startConversation']);
-       Route::get('/conversations', [ChatMessageController::class, 'getConversations']);
-          Route::get('/conversations/{id}/messages', [ChatMessageController::class, 'getMessages']);
-            Route::post('/conversations/{id}/messages', [ChatMessageController::class, 'sendMessage']);
-               Route::patch('/conversations/{id}/read', [ChatMessageController::class, 'markAsRead']);
-    });
 
-
-
-
-
-
-    
 Route::get('/search', [SearchController::class, 'search']);
 Route::get('/search/searchFilter', [SearchController::class, 'searchFilter']);
-

@@ -82,6 +82,7 @@ class ProfileController extends Controller
         $user->profile_image = $path;
         $user->save();
 
+        $this->notificationService->accountUpdated($user);
         return response()->json([
             'success' => true,
             'message' => 'Profile image uploaded successfully',
@@ -97,6 +98,7 @@ class ProfileController extends Controller
             $user->profile_image = null;
             $user->save();
         }
+        $this->notificationService->accountUpdated($user);
 
         return response()->json([
             'success' => true,

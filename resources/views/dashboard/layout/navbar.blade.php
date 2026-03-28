@@ -94,10 +94,12 @@
 
                     <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
-                    <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
-               </div>
-          </div>
+<a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+    <i class="fa fa-power-off"></i> Logout
+</a>
 
-          </div>
-     </div>
+<form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+</form>            
+
 </header>

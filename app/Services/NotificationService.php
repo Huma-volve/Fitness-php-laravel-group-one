@@ -31,10 +31,11 @@ class NotificationService
         ]);
     }
 
-    // ─── Semantic Helpers ─────────────────────────────────────────────────────────
+    // ─── Booking: Confirmed ───────────────────────────────────────────────────────
 
     /**
-     * Booking confirmed — notifies both trainee and trainer.
+     * Called after payment is verified and booking is activated.
+     * Notifies both the trainee and the trainer.
      */
     public function bookingConfirmed(Booking $booking): void
     {
@@ -64,24 +65,90 @@ class NotificationService
         );
     }
 
+    // ─── Booking: Cancelled ───────────────────────────────────────────────────────
+
     /**
-     * Session rescheduled — notifies the other party (not the one who rescheduled).
+     * Called after a booking is cancelled.
+     * Determines who cancelled and notifies the other party (or both if admin).
+     */
+    public function bookingCancelled(Booking $booking, int $actorId, bool $byAdmin = false): void
+    {
+        $booking->loadMissing(['user', 'trainer.user', 'trainerPackage.package']);
+
+        $packageName   = $booking->trainerPackage->package->title ?? 'Training Package';
+        $traineeUserId = $booking->user_id;
+        $trainerUserId = $booking->trainer?->user_id;
+        $data          = ['booking_id' => $booking->id];
+
+        if ($byAdmin) {
+            // Admin cancelled — notify both parties
+            $this->send(
+                userId:  $traineeUserId,
+                type:    'booking_cancelled',
+                title:   'Booking Cancelled',
+                message: "Your booking for \"{$packageName}\" has been cancelled by the platform.",
+                data:    $data
+            );
+
+            if ($trainerUserId) {
+                $this->send(
+                    userId:  $trainerUserId,
+                    type:    'booking_cancelled',
+                    title:   'Booking Cancelled',
+                    message: "A booking for \"{$packageName}\" has been cancelled by the platform.",
+                    data:    $data
+                );
+            }
+
+            return;
+        }
+
+        // Trainee cancelled → notify trainer
+        if ($actorId === $traineeUserId && $trainerUserId) {
+            $traineeName = $booking->user->name;
+            $this->send(
+                userId:  $trainerUserId,
+                type:    'booking_cancelled',
+                title:   'Booking Cancelled',
+                message: "{$traineeName} has cancelled their booking for \"{$packageName}\".",
+                data:    $data
+            );
+            return;
+        }
+
+        // Trainer cancelled → notify trainee
+        if ($actorId === $trainerUserId) {
+            $trainerName = $booking->trainer->user->name;
+            $this->send(
+                userId:  $traineeUserId,
+                type:    'booking_cancelled',
+                title:   'Booking Cancelled',
+                message: "Your trainer {$trainerName} has cancelled your booking for \"{$packageName}\".",
+                data:    $data
+            );
+        }
+    }
+
+    // ─── Session: Rescheduled ─────────────────────────────────────────────────────
+
+    /**
+     * Called after a session is rescheduled.
+     * Notifies the other party — not the one who rescheduled.
      */
     public function sessionRescheduled(TraineeSession $session, int $actorUserId): void
     {
         $session->loadMissing(['client', 'trainer.user']);
 
-        $newTime = $session->session_start->format('D, d M Y \a\t H:i');
-        $data    = [
+        $newTime       = $session->session_start->format('D, d M Y \a\t H:i');
+        $trainerUserId = $session->trainer->user_id ?? null;
+        $traineeName   = $session->client->name ?? 'A trainee';
+        $data          = [
             'booking_id' => $session->booking_id,
             'session_id' => $session->id,
             'new_time'   => $session->session_start->toDateTimeString(),
         ];
 
         // Rescheduled by trainee → notify trainer
-        $trainerUserId = $session->trainer->user_id ?? null;
-        $traineeName   = $session->client->name ?? 'A trainee';
-
         if ($actorUserId === $session->client_id && $trainerUserId) {
             $this->send(
                 userId:  $trainerUserId,
@@ -90,6 +157,7 @@ class NotificationService
                 message: "{$traineeName} rescheduled their session to {$newTime}.",
                 data:    $data
             );
+            return;
         }
 
         // Rescheduled by trainer → notify trainee
@@ -104,8 +172,11 @@ class NotificationService
         }
     }
 
+    // ─── Session: Reminder ────────────────────────────────────────────────────────
+
     /**
      * 1-hour reminder — notifies the trainee.
+     * Called by the SendSessionReminders scheduled command.
      */
     public function sessionReminder(TraineeSession $session): void
     {
@@ -126,8 +197,11 @@ class NotificationService
         );
     }
 
+    // ─── Profile: Updated ─────────────────────────────────────────────────────────
+
     /**
-     * Account / profile updated — notifies the user themselves.
+     * Called after the user updates their profile information.
+     * Notifies the user themselves.
      */
     public function accountUpdated(User $user): void
     {

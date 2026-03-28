@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Review;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReviewController extends Controller
 {
@@ -24,12 +26,14 @@ class ReviewController extends Controller
         $request->validate([
             'trainer_id' => 'required|exists:trainers,id',
             'rating' => 'required|integer|min:1|max:5',
+            'reply' => 'nullable|string',
             'comment' => 'nullable|string'
         ]);
 
         $review = Review::create([
             'trainer_id' => $request->trainer_id,
             'user_id'    => auth()->id(),
+            'reply'      => $request->reply,
             'rating'     => $request->rating,
             'comment'    => $request->comment
         ]);
@@ -37,12 +41,27 @@ class ReviewController extends Controller
         return $this->successResponse($review, 'Review added successfully');
     }
 
-    public function trainerReviews($trainerId)
+    public function trainerReviews(Request $request)
     {
-        $reviews = Review::with('user')
-            ->where('trainer_id', $trainerId)
-            ->latest()
-            ->paginate(10);
+        $user = Auth::user();
+
+        if (!$user->isTrainer()) {
+            abort(403);
+        }
+
+        $trainer = $user->trainerProfile;
+
+        if (!$trainer) {
+            abort(403);
+        }
+
+        $filters = $request->only(['username', 'star', 'comment', 'date_from', 'date_to']);
+        $sortBy = $request->get('sort_by', 'date');
+
+        $service = new ReviewService($trainer->id, $filters);
+
+        $reviews = $service->getReviews($sortBy);
+        $stats = $service->getStats();
 
         return $this->successResponse($reviews);
     }

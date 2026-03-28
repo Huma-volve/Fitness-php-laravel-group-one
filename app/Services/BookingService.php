@@ -175,8 +175,7 @@ class BookingService
             ]);
         });
 
-        // Notify both parties that the booking is confirmed
-        $this->notificationService->bookingConfirmed($booking);
+       
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TrainerDetailsResource;
 use App\Models\Package;
 use App\Models\TraineeSession;
 use App\Models\Trainer;
@@ -23,14 +24,23 @@ class LandingController extends Controller
     }
 
 
-    public function trainers()
+    public function trainers(Trainer $trainer)
     {
-        $data = Trainer::with('user')
-            ->orderByDesc('rating')
-            ->limit(3)
-            ->get();
+        $trainer->load([
+            'user:id,name,profile_image,status',
+            'specializations:id,name',
+            'certifications',
+            'availability',
+            'availabilityExceptions',
+            'activeTrainerPackages.package',
+        ]);
 
-        return $this->successResponse($data);
+        abort_if(!$trainer->user || $trainer->user->status !== 'active', 404, 'Trainer not found.');
+
+        return response()->json([
+            'status' => true,
+            'data' => new TrainerDetailsResource($trainer),
+        ]);
     }
 
     public function packages()

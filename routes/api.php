@@ -12,11 +12,11 @@ use App\Http\Controllers\Api\PackageController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SearchController;
-use App\Http\Controllers\Api\TrainerAvailabilityController;
-use App\Http\Controllers\Api\TrainerSessionController;
 use App\Http\Controllers\Api\TraineePaymentController;
+use App\Http\Controllers\Api\Trainer\TrainerAvailabilityController;
+use App\Http\Controllers\Api\Trainer\TrainerPackageController;
+use App\Http\Controllers\Api\Trainer\TrainerSessionController;
 use App\Http\Controllers\ChatMessageController;
-use App\Models\ChatMessage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -58,6 +58,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('trainer/sessions',           [TrainerSessionController::class, 'index']);
         Route::get('trainer/sessions/{session}', [TrainerSessionController::class, 'show']);
         Route::get('trainer/bookings',           [TrainerSessionController::class, 'bookings']);
+
+        Route::get   ('trainer/packages/available',              [TrainerPackageController::class, 'available']);
+        Route::get   ('trainer/packages',                        [TrainerPackageController::class, 'index']);
+        Route::post  ('trainer/packages',                        [TrainerPackageController::class, 'store']);
+        Route::get   ('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'show']);
+        Route::put   ('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'update']);
+        Route::delete('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'destroy']);
+        Route::patch ('trainer/packages/{trainerPackage}/toggle',[TrainerPackageController::class, 'toggle']);
     });
 });
 
@@ -86,7 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
 
-    
+
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 

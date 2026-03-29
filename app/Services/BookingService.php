@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\TraineeSession;
 use App\Models\TrainerPackage;
 use App\Models\TrainerPayout;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -16,7 +17,8 @@ class BookingService
     private const DRAFT_EXPIRES_MINUTES = 30;
 
     public function __construct(
-        private readonly PaymentService $paymentService
+        private readonly PaymentService      $paymentService,
+        private readonly NotificationService $notificationService,
     ) {}
 
     public function schedule(int $userId, int $trainerPackageId, array $sessionTimes): Booking
@@ -172,6 +174,8 @@ class BookingService
                 'payout_status'  => 'pending',
             ]);
         });
+
+       
     }
 
     /**

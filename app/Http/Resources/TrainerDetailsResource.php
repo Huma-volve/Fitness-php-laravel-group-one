@@ -36,7 +36,15 @@ class TrainerDetailsResource extends JsonResource
             'bio' => $this->bio,
             'experience_years' => (int) $this->experience_years,
             'rating' => (float) $this->rating,
-            'total_reviews' => (int) $this->total_reviews,
+            'reviews' => $this->reviews->map(function ($reviews){
+                return[
+                    'id'=>$reviews->id,
+                    'user_id'=>$reviews->user_id,
+                    'comment'=>$reviews->comment,
+                    'rating'=>$reviews->rating,
+                    'created_at'=>$reviews->created_at
+                ];
+            }),
             'is_currently_available' => $isCurrentlyAvailable,
 
             'specializations' => $this->specializations

@@ -53,7 +53,6 @@ class HomeController extends Controller
             });
         }
 
-        // ── Sorting ───────────────────────────────────────────────────────────────
 
         $sortDir = $request->input('sort_dir', 'desc');
 
@@ -72,6 +71,7 @@ class HomeController extends Controller
 
     public function showTrainer(Trainer $trainer): JsonResponse
     {
+
         $trainer->load([
             'user:id,name,profile_image,status',
             'specializations:id,name',

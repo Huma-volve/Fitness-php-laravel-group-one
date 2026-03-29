@@ -13,8 +13,10 @@ class Notification extends Model
 
     protected $fillable = [
         'user_id',
+        'type',
         'title',
         'message',
+        'data',
         'is_read',
     ];
 
@@ -22,6 +24,7 @@ class Notification extends Model
     {
         return [
             'is_read'    => 'boolean',
+            'data'       => 'array',
             'created_at' => 'datetime',
         ];
     }

@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-
+use App\Models\TrainerPackage;
+use App\Policies\TrainerPackagePolicy;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -13,7 +15,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
     }
 
     /**
@@ -24,5 +25,7 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
 
         Schema::defaultStringLength(191);
+        Gate::policy(TrainerPackage::class, TrainerPackagePolicy::class);
+
     }
 }

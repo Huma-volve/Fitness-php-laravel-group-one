@@ -21,13 +21,15 @@ class TraineeSession extends Model
         'session_end',
         'session_status',
         'notes',
+        'reminder_sent_at',
     ];
 
     protected function casts(): array
     {
         return [
-            'session_start' => 'datetime',
-            'session_end'   => 'datetime',
+            'session_start'    => 'datetime',
+            'session_end'      => 'datetime',
+            'reminder_sent_at' => 'datetime',
         ];
     }
 

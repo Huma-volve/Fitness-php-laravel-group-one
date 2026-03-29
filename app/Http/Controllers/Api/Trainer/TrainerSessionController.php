@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Trainer;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookingResource;
@@ -13,15 +13,6 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TrainerSessionController extends Controller
 {
-    /**
-     * GET /api/trainer/sessions
-     * List upcoming / filtered sessions for the authenticated trainer.
-     *
-     * Query params:
-     *   ?status=scheduled|completed|cancelled|no_show  (optional)
-     *   ?date=2024-06-01                               (optional, filter by date)
-     *   ?per_page=15                                   (optional, default 15)
-     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $trainer = auth()->user()->trainerProfile;
@@ -57,10 +48,6 @@ class TrainerSessionController extends Controller
         return TraineeSessionResource::collection($sessions);
     }
 
-    /**
-     * GET /api/trainer/sessions/{session}
-     * Show a single session detail.
-     */
     public function show(TraineeSession $session): JsonResponse
     {
         $trainer = auth()->user()->trainerProfile;
@@ -76,14 +63,7 @@ class TrainerSessionController extends Controller
         ]);
     }
 
-    /**
-     * GET /api/trainer/bookings
-     * List all bookings assigned to the authenticated trainer.
-     *
-     * Query params:
-     *   ?status=pending|confirmed|canceled  (optional)
-     *   ?per_page=15                        (optional, default 15)
-     */
+
     public function bookings(Request $request): AnonymousResourceCollection
     {
         $trainer = auth()->user()->trainerProfile;

@@ -59,7 +59,7 @@ class HomeController extends Controller
 
         match ($request->input('sort_by', 'rating')) {
             'price'            => $query->withMin(['trainerPackages' => fn($q) => $q->where('is_active', true)], 'price')
-                                        ->orderBy('trainer_packages_min_price', $sortDir),
+                ->orderBy('trainer_packages_min_price', $sortDir),
             'experience_years' => $query->orderBy('experience_years', $sortDir),
             default            => $query->orderBy('rating', $sortDir),
         };
@@ -69,12 +69,9 @@ class HomeController extends Controller
         return TrainerResource::collection($query->paginate($perPage));
     }
 
-   
+
     public function showTrainer(Trainer $trainer): JsonResponse
     {
-        // Abort if trainer's account is inactive
-        abort_if($trainer->user->status !== 'active', 404, 'Trainer not found.');
-
         $trainer->load([
             'user:id,name,profile_image,status',
             'specializations:id,name',
@@ -84,7 +81,10 @@ class HomeController extends Controller
             'activeTrainerPackages.package',
         ]);
 
+        abort_if(!$trainer->user || $trainer->user->status !== 'active', 404, 'Trainer not found.');
+
         return response()->json([
+            'status' => true,
             'data' => new TrainerDetailsResource($trainer),
         ]);
     }

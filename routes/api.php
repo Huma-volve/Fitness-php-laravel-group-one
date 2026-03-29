@@ -81,7 +81,7 @@ Route::prefix('landing')->group(function () {
 
     Route::get('/stats', [LandingController::class, 'stats']);
 
-    Route::get('/trainers', [LandingController::class, 'trainers']);
+    Route::get('/trainers/{trainer}', [LandingController::class, 'trainers']);
 
     Route::get('/packages', [LandingController::class, 'packages']);
 

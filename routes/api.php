@@ -37,7 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('role:trainee')->group(function () {
         // payments and cards info
-        Route::get('payments-history' , [TraineePaymentController::class, 'getPaymentsHistory']);
+        Route::get('payments-history', [TraineePaymentController::class, 'getPaymentsHistory']);
         Route::post('/cards', [TraineePaymentController::class, 'storeCard']);
         Route::get('/cards', [TraineePaymentController::class, 'getCards']);
         Route::delete('/cards/{id}', [TraineePaymentController::class, 'destroyCard']);
@@ -59,13 +59,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('trainer/sessions/{session}', [TrainerSessionController::class, 'show']);
         Route::get('trainer/bookings',           [TrainerSessionController::class, 'bookings']);
 
-        Route::get   ('trainer/packages/available',              [TrainerPackageController::class, 'available']);
-        Route::get   ('trainer/packages',                        [TrainerPackageController::class, 'index']);
-        Route::post  ('trainer/packages',                        [TrainerPackageController::class, 'store']);
-        Route::get   ('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'show']);
-        Route::put   ('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'update']);
+        Route::get('trainer/packages/available',              [TrainerPackageController::class, 'available']);
+        Route::get('trainer/packages',                        [TrainerPackageController::class, 'index']);
+        Route::post('trainer/packages',                        [TrainerPackageController::class, 'store']);
+        Route::get('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'show']);
+        Route::put('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'update']);
         Route::delete('trainer/packages/{trainerPackage}',       [TrainerPackageController::class, 'destroy']);
-        Route::patch ('trainer/packages/{trainerPackage}/toggle',[TrainerPackageController::class, 'toggle']);
+        Route::patch('trainer/packages/{trainerPackage}/toggle', [TrainerPackageController::class, 'toggle']);
     });
 });
 
@@ -78,9 +78,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',    [AuthController::class, 'login']);
 
 
- Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
-    Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
-    Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
+Route::post('/forgot-password', [OtpController::class, 'sendOtp']);
+Route::post('/verify-otp',      [OtpController::class, 'verifyOtp']);
+Route::post('/reset-password',  [OtpController::class, 'resetPassword']);
 
 // ── Home & Trainers ───────────────────────────────────────────────────────
 
@@ -88,20 +88,19 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout',         [AuthController::class, 'logout']);
     Route::get('/profile',         [AuthController::class, 'profile']);
-        Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
+    Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
+});
 
-    });
-
-    Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::get('/trainers',          [HomeController::class, 'index']);
     Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 
-    Route::get('notifications',[NotificationController::class,'index']);
-    Route::patch('notifications/{id}/mark-read',[NotificationController::class,'markRead']);
-    Route::patch('notifications/mark-all-read',[NotificationController::class,'markAllAsRead']);
-    Route::delete('notifications/{id}/delete',[NotificationController::class,'destroy']);
+    Route::get('notifications', [NotificationController::class, 'index']);
+    Route::patch('notifications/{id}/mark-read', [NotificationController::class, 'markRead']);
+    Route::patch('notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::delete('notifications/{id}/delete', [NotificationController::class, 'destroy']);
 
     Route::get('/search', [SearchController::class, 'search']);
 });
@@ -158,12 +157,6 @@ Route::middleware('auth:sanctum')->prefix('trainer')->group(function () {
 });
 Route::get('/auth/google/redirect', [AuthController::class, 'googleRedirect']);
 Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
-
-
-
-
-
-
 
 
 

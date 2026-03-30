@@ -23,6 +23,7 @@ class PackageResource extends JsonResource
             'sessions'         => $this->sessions === 999 ? 'Unlimited' : $this->sessions,
             'duration_days'    => $this->duration_days,
             'features' => collect($features)->filter()->keys()->values(),
+            'price' => rand(0,10000),
         ];
     }
 }

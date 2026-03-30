@@ -8,6 +8,7 @@ use App\Models\Package;
 use App\Models\TraineeSession;
 use App\Models\Trainer;
 use App\Models\User;
+use App\Http\Resources\PackageResource;
 
 class LandingController extends Controller
 {
@@ -45,8 +46,9 @@ class LandingController extends Controller
 
     public function packages()
     {
-        $data = Package::limit(3)->get();
-        return $this->successResponse($data);
+        $packages = Package::limit(3)->get();
+
+        return $this->successResponse(PackageResource::collection($packages));
     }
 
 

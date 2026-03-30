@@ -83,6 +83,13 @@ class TrainerDetailsResource extends JsonResource
             })->values(),
 
             'packages' => $this->activeTrainerPackages->map(function ($trainerPackage) {
+                $features= [
+                'progress_tracking' => $trainerPackage->package->progress_tracking,
+                'nutrition_plan'    => $trainerPackage->package->nutrition_plan,
+                'priority_booking'  => $trainerPackage->package->priority_booking,
+                'full_access'       => $trainerPackage->package->full_access,
+            ];
+
                 return [
                     'trainer_package_id' => $trainerPackage->id,
                     'package_id' => $trainerPackage->package?->id,
@@ -91,6 +98,7 @@ class TrainerDetailsResource extends JsonResource
                     'sessions' => $trainerPackage->package?->sessions,
                     'duration_days' => $trainerPackage->package?->duration_days,
                     'price' => (float) $trainerPackage->price,
+                    'features' => collect($features)->filter()->keys()->values(),
                 ];
             })->values(),
         ];

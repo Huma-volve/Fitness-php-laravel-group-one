@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Nette\Utils\Random;
 
 class PackageResource extends JsonResource
 {
@@ -24,6 +25,7 @@ class PackageResource extends JsonResource
             'duration_days'    => $this->duration_days,
             'features' => collect($features)->filter()->keys()->values(),
             'price' => rand(0,10000),
+            'is_recommended' => (bool) rand(0, 1),        // 50% chance true/false
         ];
     }
 }

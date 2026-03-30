@@ -8,6 +8,7 @@ use App\Models\Trainer;
 use App\Models\Specialization;
 use App\Models\SearchHistory;
 use App\Models\User;
+use App\Http\Resources\TrainerDetailsResource;
 use App\Models\TraineeSession;
 
 class SearchController extends Controller
@@ -36,11 +37,11 @@ class SearchController extends Controller
                     ->with(['trainerProfile.specializations','trainerProfile.availability' ,'trainerProfile.trainerPackages.package','trainerProfile.sessions'])
                     ->limit('10')->get();
 
-       if ($dataSearch->isEmpty()){
-            $dataSearch = Specialization::query()->where('name', 'like',"%{$request->search_value}%")
-                    ->with(['trainers.user','trainers.availability' ,'trainers.trainerPackages.package','trainers.sessions'])
-                    ->limit('10')->get();
-        };
+    //    if ($dataSearch->isEmpty()){
+    //         $dataSearch = Specialization::query()->where('name', 'like',"%{$request->search_value}%")
+    //                 ->with(['trainers.user','trainers.availability' ,'trainers.trainerPackages.package','trainers.sessions'])
+    //                 ->limit('10')->get();
+    //     };
 
         
         $dataSearchSave = [
@@ -54,7 +55,7 @@ class SearchController extends Controller
         
         return response()->json([
             'status' => true,
-            'data' => $dataSearch
+            'data' => TrainerDetailsResource::collection($dataSearch)
         ]);
     }
 

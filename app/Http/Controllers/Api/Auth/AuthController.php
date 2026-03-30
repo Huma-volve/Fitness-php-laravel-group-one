@@ -89,7 +89,8 @@ class AuthController extends Controller
             'status'  => true,
             'message' => 'Logged in successfully',
             'token'   => $token,
-            'user'    => $user
+            'user'    => $user,
+            'is_complete_the_profile' => rand(0, 1),
         ]);
     }
 

@@ -25,7 +25,7 @@ class SearchController extends Controller
     }
     public function search( Request $request){
         $valdiate = $request->validate([
-            'search_value' => 'required',
+            'search_value' => 'nullable',
         ]);
 
           $user_id = auth()->user()->id;

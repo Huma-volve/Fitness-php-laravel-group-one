@@ -13,46 +13,48 @@ use App\Models\TraineeSession;
 
 class SearchController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         $user_id = auth()->id();
 
-//        
-        $search_histories=SearchHistory::where('user_id',$user_id)->get();
+        //        
+        $search_histories = SearchHistory::where('user_id', $user_id)->get();
 
         return response()->json([
             'data' => $search_histories
         ]);
     }
-    public function search( Request $request){
+    public function search(Request $request)
+    {
         $valdiate = $request->validate([
             'search_value' => 'required',
         ]);
 
-          $user_id = auth()->user()->id;
+        $user_id = auth()->user()->id;
 
-        
 
-        $dataSearch = User::query()->where('name', 'like',"%{$request->search_value}%")
-                    ->where('role', "trainer")
-                    ->with(['trainerProfile.specializations','trainerProfile.availability' ,'trainerProfile.trainerPackages.package','trainerProfile.sessions'])
-                    ->limit('10')->get();
 
-    //    if ($dataSearch->isEmpty()){
-    //         $dataSearch = Specialization::query()->where('name', 'like',"%{$request->search_value}%")
-    //                 ->with(['trainers.user','trainers.availability' ,'trainers.trainerPackages.package','trainers.sessions'])
-    //                 ->limit('10')->get();
-    //     };
+        $dataSearch = User::query()->where('name', 'like', "%{$request->search_value}%")
+            ->where('role', "trainer")
+            ->with(['trainerProfile.specializations', 'trainerProfile.availability', 'trainerProfile.trainerPackages.package', 'trainerProfile.sessions'])
+            ->limit('10')->get();
 
-        
+        //    if ($dataSearch->isEmpty()){
+        //         $dataSearch = Specialization::query()->where('name', 'like',"%{$request->search_value}%")
+        //                 ->with(['trainers.user','trainers.availability' ,'trainers.trainerPackages.package','trainers.sessions'])
+        //                 ->limit('10')->get();
+        //     };
+
+
         $dataSearchSave = [
             'user_id' => $user_id,
             'search_text' => $request->search_value,
         ];
 
-        
+
         SearchHistory::create($dataSearchSave);
-        
-        
+
+
         return response()->json([
             'status' => true,
             'data' => TrainerDetailsResource::collection($dataSearch)
@@ -61,51 +63,46 @@ class SearchController extends Controller
 
 
     public function searchFilter(Request $request)
-{
-    $request->validate([
-        'durationId' => 'nullable|integer|in:1,2,3,4,5',
-        'specializationId' => 'nullable|integer|exists:specializations,id',
-    ]);
-
-    $durationRanges = [
-        2 => ['min' => 10, 'max' => 20],
-        3 => ['min' => 20, 'max' => 30],
-        4 => ['min' => 30, 'max' => 45],
-        5 => ['min' => 45, 'max' => 999999],
-    ];
-
-    $query = Trainer::query()
-        ->select('trainers.*')
-        ->with([
-            'user:id,name,email,profile_image',
-            'specializations:id,name',
-            'availability',
+    {
+        $request->validate([
+            'durationId' => 'nullable|integer|in:1,2,3,4,5',
+            'specializationId' => 'nullable|integer|exists:specializations,id',
         ]);
 
-    // Join with trainer_specializations if specialization filter is applied
-    if ($request->filled('specializationId')) {
-        $query->join('trainer_specializations', 'trainers.id', '=', 'trainer_specializations.trainer_id')
-              ->where('trainer_specializations.specialization_id', $request->specializationId);
+        $durationRanges = [
+            2 => ['min' => 10, 'max' => 20],
+            3 => ['min' => 20, 'max' => 30],
+            4 => ['min' => 30, 'max' => 45],
+            5 => ['min' => 45, 'max' => 999999],
+        ];
+
+        // Use User model to match search() output
+        $query = User::query()->where('role', "trainer")
+            ->with(['trainerProfile.specializations', 'trainerProfile.availability', 'trainerProfile.trainerPackages.package', 'trainerProfile.sessions']);
+
+        // Filter by Specialization
+        if ($request->filled('specializationId')) {
+            $query->whereHas('trainerProfile.specializations', function ($q) use ($request) {
+                $q->where('specialization_id', $request->specializationId);
+            });
+        }
+
+        // Filter by Duration
+        if ($request->filled('durationId') && $request->durationId != 1) {
+            $range = $durationRanges[$request->durationId];
+            $query->whereHas('trainerProfile.sessions', function ($q) use ($range) {
+                $q->whereRaw(
+                    'TIMESTAMPDIFF(MINUTE, session_start, session_end) BETWEEN ? AND ?',
+                    [$range['min'], $range['max']]
+                );
+            });
+        }
+
+        $trainers = $query->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => TrainerDetailsResource::collection($trainers)
+        ]);
     }
-
-    // Join with trainee_sessions if duration filter is applied
-    if ($request->filled('durationId') && $request->durationId != 1) {
-        $range = $durationRanges[$request->durationId];
-        
-        $query->join('trainee_sessions', 'trainers.id', '=', 'trainee_sessions.trainer_id')
-              ->whereRaw('TIMESTAMPDIFF(MINUTE, trainee_sessions.session_start, trainee_sessions.session_end) BETWEEN ? AND ?', 
-                  [$range['min'], $range['max']]);
-    }
-
-    // Remove duplicates if multiple joins
-    $query->distinct();
-
-    $trainers = $query->get();
-
-    return response()->json([
-        'status' => 'success',
-        'total' => $trainers->count(),
-        'data' => $trainers
-    ]);
-}
 }

@@ -31,6 +31,7 @@ class TrainerDetailsResource extends JsonResource
 
         return [
             'id' => $this->id,
+            'trainer_id' => $this->trainerProfile->id,
             'name' => $this->user?->name ?? $this->name,
             'location' => $this->location,
             'profile_image' => "https://i.pravatar.cc/300?img=" . rand(1, 100),

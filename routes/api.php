@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Trainer\TrainerSessionController;
 use App\Http\Controllers\ChatMessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\SpecializationController;
 
 
 Route::get('/user', function (Request $request) {
@@ -170,6 +171,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/conversations/{id}/read', [ChatMessageController::class, 'markAsRead']);
 });
 
+Route::get('specializations', [SpecializationController::class, 'index']);
 
 
 

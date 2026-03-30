@@ -30,9 +30,7 @@ class TrainerDetailsResource extends JsonResource
             'id' => $this->id,
             'name' => $this->user?->name,
             'location' => $this->location,
-            'profile_image' => $this->user?->profile_image
-                ? asset('storage/' . $this->user->profile_image)
-                : null,
+            'profile_image' => "https://i.pravatar.cc/300?img=". rand(1,100),
             'bio' => $this->bio,
             'experience_years' => (int) $this->experience_years,
             'rating' => (float) $this->rating,

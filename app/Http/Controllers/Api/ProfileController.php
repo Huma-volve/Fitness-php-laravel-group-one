@@ -27,6 +27,20 @@ class ProfileController extends Controller
             'about_me' => $user->about_me,
             'fitness_goals' => $user->fitness_goals,
             'preferred_training' => $user->preferred_training,
+            $billing = collect(range(1, rand(2, 5)))->map(function () {
+                return [
+                    'invoice_id' => 'INV-' . rand(20220, 20299) . '-' . rand(10, 99),
+                    'date' => now()->subDays(rand(1, 60))->format('M d, Y'),
+                    'description' => collect([
+                        'Single Package',
+                        'Premium Plan',
+                        'Personal Training Session',
+                        'Diet Plan Subscription'
+                    ])->random(),
+                    'amount' => rand(100, 500) . ' EG',
+                    'status' => 'Paid',
+                ];
+            })
         ]);
     }
 
@@ -99,7 +113,7 @@ class ProfileController extends Controller
             $user->profile_image = null;
             $user->save();
         }
-        
+
         $this->notificationService->accountUpdated($user);
 
         return response()->json([

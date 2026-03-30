@@ -45,7 +45,7 @@ class OtpController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
-            'code'  => 'required|string|size:4',
+            'code'  => 'required|string|size:6',
         ]);
 
         if ($validator->fails()) {

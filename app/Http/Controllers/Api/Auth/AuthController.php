@@ -47,7 +47,7 @@ class AuthController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => 'Account created successfully. Please verify your email with the OTP sent (1234).',
+            'message' => 'Account created successfully. Please verify your email with the OTP sent (123456).',
             'user'    => $user
         ], 201);
     }

@@ -15,7 +15,7 @@ class OtpController extends Controller
 
     public function sendOtp(Request $request)
     {
-        $code=123456;
+        $code = 123456;
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
         ]);
@@ -37,7 +37,7 @@ class OtpController extends Controller
 
         return response()->json([
             'status'  => true,
-            'message' => "OTP is ready $code ",
+            'message' => "OTP is ready: $code",
         ], 200);
     }
 
@@ -45,7 +45,7 @@ class OtpController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|exists:users,email',
-            'code'  => 'required|string|size:6',
+            'code'  => 'required|string|size:4',
         ]);
 
         if ($validator->fails()) {
@@ -67,12 +67,19 @@ class OtpController extends Controller
             ], 400);
         }
 
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            $user->email_verified_at = now();
+            $user->save();
+        }
+
         $otp->is_used = true;
+        // Keep the record if needed for forgot password, but since it's verified, marking as used is good.
         $otp->save();
 
         return response()->json([
             'status'  => true,
-            'message' => 'OTP verified successfully',
+            'message' => 'Email verified successfully. You can now login.',
         ], 200);
     }
 
@@ -80,7 +87,7 @@ class OtpController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'email'    => 'required|email|exists:users,email',
-            'code'     => 'required|string|size:6',
+            'code'     => 'required|string|size:4',
             'password' => 'required|string|min:8|confirmed',
         ]);
 

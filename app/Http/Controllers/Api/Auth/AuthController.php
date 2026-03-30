@@ -38,12 +38,16 @@ class AuthController extends Controller
             'role'     => $request->role ?? 'trainee',
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        \App\Models\OtpCode::where('email', $user->email)->delete();
+        \App\Models\OtpCode::create([
+            'email'      => $user->email,
+            'code'       => '123456',
+            'expires_at' => now()->addMinutes(10),
+        ]);
 
         return response()->json([
             'status'  => true,
-            'message' => 'Account created successfully',
-            'token'   => $token,
+            'message' => 'Account created successfully. Please verify your email with the OTP sent (1234).',
             'user'    => $user
         ], 201);
     }
@@ -69,10 +73,17 @@ class AuthController extends Controller
                 'message' => 'Invalid credentials'
             ], 401);
         }
-     
 
-        $user  = Auth::user();
-           $user->tokens()->delete();
+        $user = Auth::user();
+
+        if (!$user->email_verified_at) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Please verify your email first'
+            ], 403);
+        }
+
+        $user->tokens()->delete();
         $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'status'  => true,

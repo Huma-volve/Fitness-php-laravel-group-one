@@ -13,10 +13,10 @@ class TrainerDetailsResource extends JsonResource
         $todayDay = strtolower($now->format('l'));
         $currentTime = $now->format('H:i:s');
 
-        $todayAvailability = $this->availability
-            ->where('day_of_week', $todayDay)
-            ->where('is_active', true)
-            ->first();
+        $todayAvailability = optional($this->availability)
+    ->where('day_of_week', $todayDay)
+    ->where('is_active', true)
+    ->first();
 
         $isCurrentlyAvailable = false;
 

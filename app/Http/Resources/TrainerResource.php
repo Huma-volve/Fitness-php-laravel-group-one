@@ -12,7 +12,7 @@ class TrainerResource extends JsonResource
         return [
             'id'               => $this->id,
             'name'             => $this->user->name,
-            'profile_image'    => $this->user->profile_image,
+            'profile_image'    =>  "https://i.pravatar.cc/300?img=" . rand(1, 100),
             'bio'              => $this->bio,
             'experience_years' => $this->experience_years,
             'location'         => $this->location,

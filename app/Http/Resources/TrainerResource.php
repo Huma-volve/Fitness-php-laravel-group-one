@@ -24,7 +24,7 @@ class TrainerResource extends JsonResource
             'price_per_session' => $this->whenLoaded('trainerPackages', function () {
                 return (float) $this->trainerPackages->avg(function ($tp) {
                     $sessionCount = optional($tp->package)->sessions ?: 1;
-                    return $tp->price / $sessionCount;
+                    return round($tp->price / $sessionCount,2);
                 });
             }, 0),
         ];

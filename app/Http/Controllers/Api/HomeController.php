@@ -23,9 +23,7 @@ class HomeController extends Controller
             ->with([
                 'user:id,name,profile_image',
                 'specializations:id,name',
-                'trainerPackages' => fn($q) => $q->where('is_active', true)
-                    ->with('package:id,sessions')
-                    ->select('id', 'trainer_id', 'price', 'package_id'),
+                'trainerPackages' => fn($q) => $q->where('is_active', true)->with('package:id,sessions'),
             ])
             ->whereHas('user', fn($q) => $q->where('status', 'active'));
 

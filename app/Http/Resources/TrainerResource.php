@@ -21,6 +21,12 @@ class TrainerResource extends JsonResource
             'specializations'  => $this->whenLoaded('specializations', fn () =>
             $this->specializations->pluck('name')
             ),
+            'price_per_session' => $this->whenLoaded('trainerPackages', function () {
+                return (float) ($this->trainerPackages->where('is_active', true)->avg(function ($tp) {
+                    $sessions = $tp->package->sessions ?? 1;
+                    return $tp->price / ($sessions ?: 1);
+                }) ?? 0);
+            }, 0),
         ];
     }
 }

@@ -95,8 +95,8 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
 
-    Route::get('/trainers',          [HomeController::class, 'index']);
-    Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
+    
+    
 
     Route::get('notifications', [NotificationController::class, 'index']);
     Route::patch('notifications/{id}/mark-read', [NotificationController::class, 'markRead']);
@@ -105,6 +105,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/search', [SearchController::class, 'search']);
 });
+Route::get('/trainers',          [HomeController::class, 'index']);
+Route::get('/trainers/{trainer}', [HomeController::class, 'showTrainer']);
 // ======= Public Landing API (No Authentication Required) =======
 Route::prefix('landing')->group(function () {
 

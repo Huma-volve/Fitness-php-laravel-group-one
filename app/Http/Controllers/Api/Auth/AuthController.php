@@ -90,7 +90,7 @@ class AuthController extends Controller
             'message' => 'Logged in successfully',
             'token'   => $token,
             'user'    => $user,
-            'is_complete_the_profile' => rand(0, 1),
+            'is_complete_the_profile' => $user->fitnessProfile ? false : true,
         ]);
     }
 

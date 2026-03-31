@@ -22,10 +22,11 @@ class TrainerResource extends JsonResource
             $this->specializations->pluck('name')
             ),
             'price_per_session' => $this->whenLoaded('trainerPackages', function () {
-                return (float) $this->trainerPackages->avg(function ($tp) {
+                $avg = $this->trainerPackages->avg(function ($tp) {
                     $sessionCount = optional($tp->package)->sessions ?: 1;
-                    return round($tp->price / $sessionCount,2);
+                    return $tp->price / $sessionCount;
                 });
+                return $avg ? round($avg, 2) : 0;
             }, 0),
         ];
     }
